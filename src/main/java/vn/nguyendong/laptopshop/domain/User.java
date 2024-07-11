@@ -1,6 +1,16 @@
 package vn.nguyendong.laptopshop.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+// Tạo bảng user trong database bằng code (không phải tạo cơ sở dữ liệu thủ công)
+// @Table(name="user") // dùng cái này khi database đã được tạo sẵn
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String email;
     private String password;
