@@ -1,9 +1,8 @@
 package vn.nguyendong.laptopshop.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import vn.nguyendong.laptopshop.service.UserService;
 
@@ -17,26 +16,10 @@ public class UserController {
     }
 
     @RequestMapping("/")
-    public String getHomePage() {
+    public String getHomePage(Model model) {
         String test = userService.handleHello();
-        // return "dong.html";
+        model.addAttribute("m10", test);
+        model.addAttribute("neymar", "Hello from UserController!");
         return "hello";
     }
 }
-
-// @RestController
-// public class UserController {
-
-// // dependency injection (DI)-> Không nên dùng @Autowired vì ko tốt cho
-// testing
-// private UserService userService;
-
-// public UserController(UserService userService) {
-// this.userService = userService;
-// }
-
-// @GetMapping("/")
-// public String getHomePage() {
-// return this.userService.handleHello();
-// }
-// }
