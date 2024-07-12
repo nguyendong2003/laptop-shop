@@ -31,4 +31,8 @@ public class UserService {
         User saveUser = this.userRepository.save(user);
         return saveUser;
     }
+
+    public void handleDeleteUser(long id) {
+        this.userRepository.deleteById(id);
+    }
 }
