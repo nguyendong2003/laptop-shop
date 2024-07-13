@@ -10,7 +10,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="description" content="LaptopShop project" />
                 <meta name="author" content="" />
-                <title>Dashboard</title>
+                <title>Create user</title>
                 <link href="/css/styles.css" rel="stylesheet" />
                 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
             </head>
@@ -32,41 +32,25 @@
                                     <div class="row">
                                         <div class="col-12 mx-auto">
                                             <div class="d-flex justify-content-between">
-                                                <h3>Table users</h3>
-                                                <a href="/admin/user/create" class="btn btn-primary">Create a user</a>
+                                                <h3>User detail with ID = ${user.id}</h3>
                                             </div>
 
                                             <hr />
-                                            <table class="table table-bordered table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>ID</th>
-                                                        <th>Email</th>
-                                                        <th>Full Name</th>
-                                                        <th>Role</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <c:forEach var="user" items="${users1}">
-                                                        <tr>
-                                                            <td>${user.id}</td>
-                                                            <td>${user.email}</td>
-                                                            <td>${user.fullName}</td>
-                                                            <td>${user.role.name}</td>
-                                                            <td>
-                                                                <a href="/admin/user/${user.id}"
-                                                                    class="btn btn-success">View</a>
-                                                                <a href="/admin/user/update/${user.id}"
-                                                                    class="btn btn-warning mx-2">Update</a>
-                                                                <a href="/admin/user/delete/${user.id}"
-                                                                    class="btn btn-danger">Delete</a>
-                                                            </td>
-                                                        </tr>
-                                                    </c:forEach>
 
-                                                </tbody>
-                                            </table>
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    User information
+                                                </div>
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item">ID: ${user.id}</li>
+                                                    <li class="list-group-item">Email: ${user.email}</li>
+                                                    <li class="list-group-item">Full name: ${user.fullName}</li>
+                                                    <li class="list-group-item">Role: ${user.role.name}</li>
+                                                    <li class="list-group-item">Address: ${user.address}</li>
+                                                </ul>
+                                            </div>
+
+                                            <a href="/admin/user" class="btn btn-success mt-3">Back</a>
                                         </div>
 
                                     </div>

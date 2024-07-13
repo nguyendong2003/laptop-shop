@@ -1,30 +1,36 @@
-package vn.nguyendong.laptopshop.controller;
+package vn.nguyendong.laptopshop.controller.admin;
 
 import java.util.List;
 
-import org.eclipse.tags.shaded.org.apache.xpath.operations.Mod;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import vn.nguyendong.laptopshop.domain.User;
+import vn.nguyendong.laptopshop.service.UploadService;
 import vn.nguyendong.laptopshop.service.UserService;
 
 @Controller
 public class UserController {
     // dependency injection (DI)-> Không nên dùng @Autowired vì ko tốt cho testing
     private final UserService userService;
+    private final UploadService uploadService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UploadService uploadService,
+            PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.uploadService = uploadService;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public String getHomePage(Model model) {
         List<User> users = this.userService.getAllUsers();
         System.out.println(users);
@@ -34,28 +40,41 @@ public class UserController {
         return "hello";
     }
 
-    @RequestMapping("/admin/user")
+    @GetMapping("/admin/user")
     public String getUserPage(Model model) {
         List<User> users = this.userService.getAllUsers();
         model.addAttribute("users1", users);
-        return "admin/user/table-user";
-    }
-
-    @RequestMapping("/admin/user/{userId}")
-    public String getUserDetailPage(Model model, @PathVariable long userId) {
-        User user = this.userService.getUserById(userId);
-        model.addAttribute("user", user);
         return "admin/user/show";
     }
 
-    @RequestMapping("/admin/user/create")
+    @GetMapping("/admin/user/{userId}")
+    public String getUserDetailPage(Model model, @PathVariable long userId) {
+        User user = this.userService.getUserById(userId);
+        model.addAttribute("user", user);
+        return "admin/user/detail";
+    }
+
+    @GetMapping("/admin/user/create")
     public String getCreateUserPage(Model model) {
         model.addAttribute("newUser", new User());
         return "admin/user/create";
     }
 
-    @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
-    public String createUserPage(Model model, @ModelAttribute("newUser") User user) {
+    @PostMapping("/admin/user/create")
+    public String createUserPage(Model model,
+            @ModelAttribute("newUser") User user,
+            @RequestParam("avatarUploadFile") MultipartFile file) {
+
+        String avatarName = "";
+        if (!file.isEmpty()) {
+            avatarName = this.uploadService.handleSaveUploadFile(file, "avatar");
+        }
+        String hashPassword = this.passwordEncoder.encode(user.getPassword());
+
+        user.setAvatar(avatarName);
+        user.setPassword(hashPassword);
+        user.setRole(this.userService.getRoleByName(user.getRole().getName()));
+
         this.userService.handleSaveUser(user);
         return "redirect:/admin/user";
     }
@@ -74,9 +93,9 @@ public class UserController {
             currentUser.setPhone(user.getPhone());
             currentUser.setFullName(user.getFullName());
             currentUser.setAddress(user.getAddress());
+            currentUser.setRole(this.userService.getRoleByName(user.getRole().getName()));
             this.userService.handleSaveUser(currentUser);
         }
-        // model.addAttribute("newUser", currentUser);
         return "redirect:/admin/user";
     }
 
