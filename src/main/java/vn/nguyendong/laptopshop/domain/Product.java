@@ -1,5 +1,6 @@
 package vn.nguyendong.laptopshop.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,8 +29,17 @@ public class Product {
     // @NotBlank(message = "Product image is required")
     private String image;
 
+    /*
+     * - Lưu ý: kiểu String trong java thì mặc định trong mysql thì column này có
+     * kiểu varchar(255) => tối đa 255 ký tự => đưa text quá 255 ký tự thì error
+     * 
+     * => Giải pháp: Dùng @Column để định nghĩa kiểu dữ liệu cho column trong mysql
+     * có các kiểu dữ liệu như: TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT
+     */
+
     @NotBlank(message = "Detail description is required")
     @Size(min = 2, message = "Detail description must be at least 2 characters")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String detailDescription;
 
     @NotBlank(message = "Short description is required")
