@@ -29,6 +29,14 @@
                                             <div class="card-body">
                                                 <form:form method="post" action="/register"
                                                     modelAttribute="registerUser">
+                                                    <!--  -->
+                                                    <c:set var="errorEmail">
+                                                        <form:errors path="email" class="invalid-feedback" />
+                                                    </c:set>
+                                                    <c:set var="errorPassword">
+                                                        <form:errors path="confirmPassword" class="invalid-feedback" />
+                                                    </c:set>
+                                                    <!--  -->
                                                     <div class="row mb-3">
                                                         <div class="col-md-6">
                                                             <div class="form-floating mb-3 mb-md-0">
@@ -48,17 +56,21 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-floating mb-3">
-                                                        <input class="form-control" id="inputEmail" type="email"
-                                                            placeholder="name@example.com" path="email" />
-                                                        <label for="inputEmail">Email address</label>
+                                                        <form:input
+                                                            class="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
+                                                            type="email" placeholder="name@example.com" path="email" />
+                                                        <label>Email address</label>
+                                                        ${errorEmail}
                                                     </div>
                                                     <div class="row mb-3">
                                                         <div class="col-md-6">
                                                             <div class="form-floating mb-3 mb-md-0">
-                                                                <form:input class="form-control" id="inputPassword"
+                                                                <form:input
+                                                                    class="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
                                                                     type="password" placeholder="Create a password"
                                                                     path="password" />
-                                                                <label for="inputPassword">Password</label>
+                                                                <label>Password</label>
+                                                                ${errorPassword}
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -69,6 +81,7 @@
                                                                     path="confirmPassword" />
                                                                 <label for="inputPasswordConfirm">Confirm
                                                                     Password</label>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -93,7 +106,7 @@
                 </div>
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
                     crossorigin="anonymous"></script>
-                <script src="/s/scripts.js"></script>
+                <script src="/js/scripts.js"></script>
             </body>
 
             </html>

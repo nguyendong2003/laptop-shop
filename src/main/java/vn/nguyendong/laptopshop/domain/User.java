@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import vn.nguyendong.laptopshop.service.validator.StrongPassword;
 
 /*
  * @NotNull: Kiểm tra trường đó không được là null nhưng có thể là chuỗi rỗng
@@ -38,6 +39,7 @@ public class User {
 
     @NotBlank(message = "Password is required")
     @Size(min = 2, message = "Password must be at least 2 characters long")
+    @StrongPassword(message = "Mật khẩu phải dài ít nhất 8 ký tự và bao gồm kết hợp của chữ cái viết hoa, chữ cái viết thường, số, và ký tự đặc biệt.")
     private String password;
 
     @NotBlank(message = "Full name is required")
