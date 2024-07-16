@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.validation.Valid;
 import vn.nguyendong.laptopshop.domain.User;
 import vn.nguyendong.laptopshop.service.UploadService;
 import vn.nguyendong.laptopshop.service.UserService;
@@ -52,13 +55,21 @@ public class UserController {
 
     @PostMapping("/admin/user/create")
     public String createUserPage(Model model,
-            @ModelAttribute("newUser") User user,
+            @Valid @ModelAttribute("newUser") User user,
+            BindingResult bindingResult, // phải đặt dòng này ngay sau @Valid
             @RequestParam("avatarUploadFile") MultipartFile file) {
 
-        String avatarName = "";
-        if (!file.isEmpty()) {
-            avatarName = this.uploadService.handleSaveUploadFile(file, "avatar");
+        // List<FieldError> errors = bindingResult.getFieldErrors();
+        // for (FieldError error : errors) {
+        // System.out.println(">>>>>>>>>>>>>>>>>>" + error.getField() + " - " +
+        // error.getDefaultMessage());
+        // }
+
+        if (bindingResult.hasErrors()) {
+            return "/admin/user/create";
         }
+
+        String avatarName = this.uploadService.handleSaveUploadFile(file, "avatar");
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
 
         user.setAvatar(avatarName);
@@ -77,9 +88,29 @@ public class UserController {
     }
 
     @PostMapping("admin/user/update")
-    public String postUpdateUser(Model model, @ModelAttribute("newUser") User user) {
+    public String postUpdateUser(Model model,
+            @Valid @ModelAttribute("newUser") User user,
+            BindingResult bindingResult,
+            @RequestParam("avatarUploadFile") MultipartFile file) {
+
+        List<FieldError> errors = bindingResult.getFieldErrors();
+        for (FieldError error : errors) {
+            System.out.println(">>>>>>>>>>>>>>>>>>" + error.getField() + " - " +
+                    error.getDefaultMessage());
+        }
+
+        if (bindingResult.hasErrors()) {
+            User currentUser = this.userService.getUserById(user.getId());
+            model.addAttribute("originImage", currentUser.getAvatar());
+            return "/admin/user/update";
+        }
+
         User currentUser = this.userService.getUserById(user.getId());
         if (currentUser != null) {
+            if (!file.isEmpty()) {
+                String avatarName = this.uploadService.handleSaveUploadFile(file, "avatar");
+                currentUser.setAvatar(avatarName);
+            }
             currentUser.setPhone(user.getPhone());
             currentUser.setFullName(user.getFullName());
             currentUser.setAddress(user.getAddress());

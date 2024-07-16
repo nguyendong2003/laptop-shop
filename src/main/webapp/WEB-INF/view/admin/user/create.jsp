@@ -33,10 +33,10 @@
                     <div id="layoutSidenav_content">
                         <main>
                             <div class="container-fluid px-4">
-                                <h1 class="mt-4">Manage users</h1>
+                                <h1 class="mt-4">Manage user</h1>
                                 <ol class="breadcrumb mb-4">
                                     <li class="breadcrumb-item"><a href="/admin"> Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Users</li>
+                                    <li class="breadcrumb-item active">User</li>
                                 </ol>
 
                                 <div class="mt-1">
@@ -46,25 +46,61 @@
                                             <hr />
                                             <form:form action="/admin/user/create" method="post"
                                                 enctype="multipart/form-data" modelAttribute="newUser" class="row">
+                                                <!-- Define Variable -->
+                                                <c:set var="errorEmail">
+                                                    <form:errors path="email" class="invalid-feedback" />
+                                                </c:set>
+                                                <c:set var="errorPassword">
+                                                    <form:errors path="password" class="invalid-feedback" />
+                                                </c:set>
+                                                <c:set var="errorPhone">
+                                                    <form:errors path="phone" class="invalid-feedback" />
+                                                </c:set>
+                                                <c:set var="errorFullName">
+                                                    <form:errors path="fullName" class="invalid-feedback" />
+                                                </c:set>
+                                                <c:set var="errorAddress">
+                                                    <form:errors path="address" class="invalid-feedback" />
+                                                </c:set>
+                                                <!--  -->
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label for="" class="form-label">Email:</label>
-                                                    <form:input type="email" class="form-control" path="email" />
+                                                    <form:input type="text"
+                                                        class="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
+                                                        path="email" oninput="this.classList.remove('is-invalid');" />
+                                                    ${errorEmail}
+
                                                 </div>
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label for="" class="form-label">Password:</label>
-                                                    <form:input type="password" class="form-control" path="password" />
+                                                    <form:input type="password"
+                                                        class="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
+                                                        path="password"
+                                                        oninput="this.classList.remove('is-invalid');" />
+                                                    ${errorPassword}
+
                                                 </div>
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label for="" class="form-label">Phone number:</label>
-                                                    <form:input type="number" class="form-control" path="phone" />
+                                                    <form:input type="number"
+                                                        class="form-control ${not empty errorPhone ? 'is-invalid' : ''}"
+                                                        path="phone" oninput="this.classList.remove('is-invalid');" />
+                                                    ${errorPhone}
                                                 </div>
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label for="" class="form-label">Full name:</label>
-                                                    <form:input type="text" class="form-control" path="fullName" />
+                                                    <form:input type="text"
+                                                        class="form-control ${not empty errorFullName ? 'is-invalid' : ''}"
+                                                        path="fullName"
+                                                        oninput="this.classList.remove('is-invalid');" />
+                                                    ${errorFullName}
                                                 </div>
                                                 <div class="mb-3 col-12">
                                                     <label for="" class="form-label">Address:</label>
-                                                    <form:input type="text" class="form-control" path="address" />
+                                                    <form:input type="text"
+                                                        class="form-control ${not empty errorAddress ? 'is-invalid' : ''}"
+                                                        path="address" oninput="this.classList.remove('is-invalid');" />
+                                                    ${errorAddress}
                                                 </div>
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label for="" class="form-label">Role:</label>
@@ -79,7 +115,7 @@
                                                         id="avatarFile" accept=".png, .jpg," />
                                                 </div>
                                                 <div class="col-12 mb-3 d-flex justify-content-center">
-                                                    <img style="max-height: 200px; display: none; border-radius: 100%;"
+                                                    <img style="display: none; height: 300px; width: 300px; object-fit: cover;"
                                                         id="avatarPreview" alt="avatar preview" />
                                                 </div>
                                                 <div class="col-12 mb-5">

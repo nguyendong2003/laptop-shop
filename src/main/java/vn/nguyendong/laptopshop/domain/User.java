@@ -10,17 +10,42 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
+/*
+ * @NotNull: Kiểm tra trường đó không được là null nhưng có thể là chuỗi rỗng
+ * hoặc chỉ chứa khoảng trắng.
+ * 
+ * @NotEmpty: Kiểm tra trường đó không được là null và chiều dài của chuỗi phải
+ * lớn hơn 0, nhưng nó có thể chứa khoảng trắng.
+ * 
+ * @NotBlank: Kiểm tra trường đó không được là null, chiều dài sau khi cắt
+ * khoảng trắng phải lớn hơn 0, và không được chỉ chứa khoảng trắng.
+ * 
+ */
 @Entity
 @Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 2, message = "Password must be at least 2 characters long")
     private String password;
+
+    @NotBlank(message = "Full name is required")
+    @Size(min = 2, message = "Full name must be at least 2 characters long")
     private String fullName;
+
     private String address;
+
     private String phone;
 
     private String avatar;

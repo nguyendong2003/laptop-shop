@@ -15,6 +15,23 @@
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
                 <script>
                     $(document).ready(() => {
+                        // Load original image when error on field input
+                        const originImage = "${originImage}"
+                        if (originImage) {
+                            const imageURL = "/images/avatar/" + originImage;
+                            $("#avatarPreview").attr("src", imageURL);
+                            $("#avatarPreview").css({ "display": "block" });
+                        }
+
+                        // Load original image
+                        const originalImage = "${newUser.avatar}";
+                        if (originalImage) {
+                            const imageURL = "/images/avatar/" + originalImage;
+                            $("#avatarPreview").attr("src", imageURL);
+                            $("#avatarPreview").css({ "display": "block" });
+                        }
+
+                        // Upload image 
                         const avatarFile = $("#avatarFile");
                         avatarFile.change(function (e) {
                             const imgURL = URL.createObjectURL(e.target.files[0]);
@@ -33,10 +50,10 @@
                     <div id="layoutSidenav_content">
                         <main>
                             <div class="container-fluid px-4">
-                                <h1 class="mt-4">Manage users</h1>
+                                <h1 class="mt-4">Manage user</h1>
                                 <ol class="breadcrumb mb-4">
                                     <li class="breadcrumb-item"><a href="/admin"> Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Users</li>
+                                    <li class="breadcrumb-item active">User</li>
                                 </ol>
 
                                 <div class="mt-5">
@@ -45,29 +62,63 @@
                                             <h3>Update user</h3>
                                             <hr />
                                             <form:form action="/admin/user/update" method="post"
-                                                modelAttribute="newUser">
+                                                enctype="multipart/form-data" modelAttribute="newUser" class="row">
+                                                <!-- Define Variable -->
+                                                <c:set var="errorPhone">
+                                                    <form:errors path="phone" class="invalid-feedback" />
+                                                </c:set>
+                                                <c:set var="errorFullName">
+                                                    <form:errors path="fullName" class="invalid-feedback" />
+                                                </c:set>
+                                                <c:set var="errorAddress">
+                                                    <form:errors path="address" class="invalid-feedback" />
+                                                </c:set>
+                                                <!--  -->
                                                 <div class="mb-3 d-none">
                                                     <label for="" class="form-label">Id:</label>
                                                     <form:input type="text" class="form-control" path="id" />
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="mb-3 d-none">
+                                                    <label for="" class="form-label">Password:</label>
+                                                    <form:input type="text" class="form-control" path="password" />
+                                                </div>
+                                                <div class="mb-3 col-12">
                                                     <label for="" class="form-label">Email:</label>
-                                                    <form:input type="email" class="form-control" path="email"
-                                                        disabled="true" />
+                                                    <form:input type="text" class="form-control" path="email"
+                                                        readonly="true" />
                                                 </div>
-                                                <div class="mb-3">
+                                                <!-- <div class="mb-3 col-12 col-md-6">
+                                                    <label for="" class="form-label">Password:</label>
+                                                    <form:input type="password"
+                                                        class="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
+                                                        path="password"
+                                                        oninput="this.classList.remove('is-invalid');" />
+                                                    ${errorPassword}
+
+                                                </div> -->
+                                                <div class="mb-3 col-12 col-md-6">
                                                     <label for="" class="form-label">Phone number:</label>
-                                                    <form:input type="number" class="form-control" path="phone" />
+                                                    <form:input type="number"
+                                                        class="form-control ${not empty errorPhone ? 'is-invalid' : ''}"
+                                                        path="phone" oninput="this.classList.remove('is-invalid');" />
+                                                    ${errorPhone}
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="mb-3 col-12 col-md-6">
                                                     <label for="" class="form-label">Full name:</label>
-                                                    <form:input type="text" class="form-control" path="fullName" />
+                                                    <form:input type="text"
+                                                        class="form-control ${not empty errorFullName ? 'is-invalid' : ''}"
+                                                        path="fullName"
+                                                        oninput="this.classList.remove('is-invalid');" />
+                                                    ${errorFullName}
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="mb-3 col-12">
                                                     <label for="" class="form-label">Address:</label>
-                                                    <form:input type="text" class="form-control" path="address" />
+                                                    <form:input type="text"
+                                                        class="form-control ${not empty errorAddress ? 'is-invalid' : ''}"
+                                                        path="address" oninput="this.classList.remove('is-invalid');" />
+                                                    ${errorAddress}
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="mb-3 col-12 col-md-6">
                                                     <label for="" class="form-label">Role:</label>
                                                     <form:select class="form-select" path="role.name">
                                                         <form:option value="USER">USER</form:option>
@@ -80,11 +131,12 @@
                                                         id="avatarFile" accept=".png, .jpg," />
                                                 </div>
                                                 <div class="col-12 mb-3 d-flex justify-content-center">
-                                                    <img style="max-height: 200px; display: none; border-radius: 100%;"
+                                                    <img style="display: none; height: 300px; width: 300px; object-fit: cover;"
                                                         id="avatarPreview" alt="avatar preview" />
                                                 </div>
-
-                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                <div class="col-12 mb-5">
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                </div>
                                             </form:form>
                                         </div>
                                     </div>

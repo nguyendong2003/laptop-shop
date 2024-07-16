@@ -10,7 +10,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="description" content="LaptopShop project" />
                 <meta name="author" content="" />
-                <title>Delete user</title>
+                <title>Delete product</title>
                 <link href="/css/styles.css" rel="stylesheet" />
                 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
             </head>
@@ -22,25 +22,25 @@
                     <div id="layoutSidenav_content">
                         <main>
                             <div class="container-fluid px-4">
-                                <h1 class="mt-4">Manage users</h1>
+                                <h1 class="mt-4">Manage product</h1>
                                 <ol class="breadcrumb mb-4">
-                                    <li class="breadcrumb-item"><a href="/admin"> Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Users</li>
+                                    <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                                    <li class="breadcrumb-item active">Product</li>
                                 </ol>
 
                                 <div class="mt-5">
                                     <div class="row">
                                         <div class="col-md-6 col-12 mx-auto">
-                                            <h3>Delete user with id= ${id}</h3>
+                                            <h3>Delete product with id= ${id}</h3>
 
                                             <hr />
 
                                             <div class="alert alert-danger">
-                                                Are you sure to delete this user?
+                                                Are you sure to delete this product?
                                             </div>
 
-                                            <form:form method="post" action="/admin/user/delete"
-                                                modelAttribute="newUser">
+                                            <form:form method="post" action="/admin/product/delete"
+                                                modelAttribute="newProduct">
                                                 <div class="mb-3 d-none">
                                                     <label for="" class="form-label">Id:</label>
                                                     <form:input type="text" class="form-control" path="id"
@@ -58,7 +58,7 @@
                 </div>
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
                     crossorigin="anonymous"></script>
-                <script src="js/scripts.js"></script>
+                <script src="/js/scripts.js"></script>
             </body>
 
             </html>
