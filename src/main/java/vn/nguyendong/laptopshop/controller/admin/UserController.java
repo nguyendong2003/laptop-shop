@@ -59,14 +59,14 @@ public class UserController {
             BindingResult bindingResult, // phải đặt dòng này ngay sau @Valid
             @RequestParam("avatarUploadFile") MultipartFile file) {
 
-        // List<FieldError> errors = bindingResult.getFieldErrors();
-        // for (FieldError error : errors) {
-        // System.out.println(">>>>>>>>>>>>>>>>>>" + error.getField() + " - " +
-        // error.getDefaultMessage());
-        // }
+        List<FieldError> errors = bindingResult.getFieldErrors();
+        for (FieldError error : errors) {
+            System.out.println(">>>>>>>>>>>>>>>>>>" + error.getField() + " - " +
+                    error.getDefaultMessage());
+        }
 
         if (bindingResult.hasErrors()) {
-            return "/admin/user/create";
+            return "admin/user/create";
         }
 
         String avatarName = this.uploadService.handleSaveUploadFile(file, "avatar");
@@ -102,7 +102,7 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             User currentUser = this.userService.getUserById(user.getId());
             model.addAttribute("originImage", currentUser.getAvatar());
-            return "/admin/user/update";
+            return "admin/user/update";
         }
 
         User currentUser = this.userService.getUserById(user.getId());

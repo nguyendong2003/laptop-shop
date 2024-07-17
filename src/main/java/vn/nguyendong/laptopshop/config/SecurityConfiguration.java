@@ -61,7 +61,7 @@ public class SecurityConfiguration {
                                 "/images/**")
                         .permitAll()
 
-                        // All request must be authenticated
+                        // The remaining requests must be authenticated
                         .anyRequest().authenticated())
 
                 // Configure login page

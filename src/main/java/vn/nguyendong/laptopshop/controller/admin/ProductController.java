@@ -59,8 +59,7 @@ public class ProductController {
                     error.getDefaultMessage());
         }
         if (bindingResult.hasErrors()) {
-            System.out.println("=======================Loi roi");
-            return "/admin/product/create";
+            return "admin/product/create";
         }
 
         String productImageName = this.uploadService.handleSaveUploadFile(file, "product");
@@ -88,7 +87,7 @@ public class ProductController {
         if (bindingResult.hasErrors()) {
             Product curProduct = this.productService.getProductById(product.getId());
             model.addAttribute("originImage", curProduct.getImage());
-            return "/admin/product/update";
+            return "admin/product/update";
         }
 
         Product currentProduct = this.productService.getProductById(product.getId());
