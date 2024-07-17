@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import jakarta.servlet.DispatcherType;
 import vn.nguyendong.laptopshop.service.CustomerUserDetailsService;
@@ -46,9 +47,16 @@ public class SecurityConfiguration {
         return authProvider;
     }
 
+    // Redirect after login (USER: /, ADMIN: /admin)
+    @Bean
+    public AuthenticationSuccessHandler customSuccessHandler() {
+        return new CustomSuccessHandler();
+    }
+
     //
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // version 6: Lambda Syntax
         http
                 .authorizeHttpRequests(authorize -> authorize
                         // Permit FORWARD, INCLUDE when using Spring MVC (default denied)
@@ -57,9 +65,12 @@ public class SecurityConfiguration {
                         .permitAll()
 
                         // Permit all requests to the following paths
-                        .requestMatchers("/", "/login", "/client/**", "/css/**", "/js/**",
+                        .requestMatchers("/", "/login", "/product/**", "/client/**", "/css/**", "/js/**",
                                 "/images/**")
                         .permitAll()
+
+                        // Only admin can access to the following paths
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // The remaining requests must be authenticated
                         .anyRequest().authenticated())
@@ -68,7 +79,10 @@ public class SecurityConfiguration {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .failureUrl("/login?error")
-                        .permitAll());
+                        .successHandler(customSuccessHandler())
+                        .permitAll())
+                // User does not have permission to access the admin's page
+                .exceptionHandling(ex -> ex.accessDeniedPage("/access-deny"));
         return http.build();
     }
 }

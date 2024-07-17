@@ -34,6 +34,12 @@
                                                         </div>
                                                     </c:if>
                                                     <!--  -->
+                                                    <!-- Display message when logout successfully -->
+                                                    <c:if test="${param.logout != null}">
+                                                        <div class="my-2" style="color: green;">Logout successfully.
+                                                        </div>
+                                                    </c:if>
+                                                    <!--  -->
                                                     <div class="form-floating mb-3">
                                                         <input class="form-control" id="username" type="text"
                                                             placeholder="Username" name="username" />
