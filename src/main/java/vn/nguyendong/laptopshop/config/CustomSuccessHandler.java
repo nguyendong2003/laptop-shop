@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -16,8 +17,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import vn.nguyendong.laptopshop.domain.User;
+import vn.nguyendong.laptopshop.service.UserService;
 
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
+    @Autowired
+    private UserService userService;
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -34,6 +39,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
         redirectStrategy.sendRedirect(request, response, targetUrl);
         clearAuthenticationAttributes(request);
+        setDataToSession(request, authentication);
     }
 
     protected String determineTargetUrl(final Authentication authentication) {
@@ -67,5 +73,22 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+    }
+
+    protected void setDataToSession(HttpServletRequest request, Authentication authentication) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return;
+        }
+        // get email (username)
+        String email = authentication.getName();
+        // get user by email
+        User user = userService.getUserByEmail(email);
+
+        if (user != null) {
+            session.setAttribute("fullName", user.getFullName());
+            session.setAttribute("avatar", user.getAvatar());
+        }
+
     }
 }
