@@ -35,7 +35,7 @@ public class ProductController {
     public String getProductPage(Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
         int pageSize = 6;
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        Page<Product> pageProducts = this.productService.getAllProducts(pageable);
+        Page<Product> pageProducts = this.productService.fetchProducts(pageable);
         List<Product> products = pageProducts.getContent();
 
         model.addAttribute("products", products);

@@ -85,6 +85,14 @@
 			<artifactId>spring-session-jdbc</artifactId>
 		</dependency>
 
+		<!-- Filter Query với JPA Specifications -> JPA Criteria MetaModel -->
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+			<version>6.4.1.Final</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -1,6 +1,7 @@
 package vn.nguyendong.laptopshop.controller.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -145,20 +146,39 @@ public class ItemController {
     }
 
     @GetMapping("/products")
-    public String getProductPage(Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
-        // int pageSize = 6;
-        // Pageable pageable = PageRequest.of(page - 1, pageSize);
-        // Page<Product> prs = this.productService.getAllProducts(pageable);
-        // List<Product> products = prs.getContent();
-
-        // model.addAttribute("products", products);
-        // model.addAttribute("currentPage", page);
-        // model.addAttribute("totalPages", prs.getTotalPages());
-        // return "client/product/show";
-
-        int pageSize = 6;
+    public String getProductPage(Model model,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "name", defaultValue = "") String name,
+            @RequestParam(value = "minPrice", defaultValue = "") double min,
+            @RequestParam(value = "maxPrice", defaultValue = "") double max,
+            @RequestParam(value = "factory", defaultValue = "") String factory,
+            @RequestParam(value = "target", defaultValue = "") String target,
+            @RequestParam(value = "price", defaultValue = "") String price) {
+        int pageSize = 60;
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        Page<Product> pageProducts = this.productService.getAllProducts(pageable);
+
+        // case 1
+        Page<Product> pageProducts1 = this.productService.fetchProductsWithSpecification1(pageable, name);
+
+        // case 2
+        Page<Product> pageProducts2 = this.productService.fetchProductsWithSpecification2(pageable, min);
+
+        // case 3
+        Page<Product> pageProducts3 = this.productService.fetchProductsWithSpecification3(pageable, max);
+
+        // case 4
+        Page<Product> pageProducts4 = this.productService.fetchProductsWithSpecification4(pageable, factory);
+
+        // case 5
+        List<String> factories = Arrays.asList(factory.split(","));
+        Page<Product> pageProducts5 = this.productService.fetchProductsWithSpecification5(pageable, factories);
+
+        // case 7
+        List<String> prices = Arrays.asList(price.split(","));
+        Page<Product> pageProducts7 = this.productService.fetchProductsWithSpecification7(pageable, prices);
+
+        //
+        Page<Product> pageProducts = this.productService.fetchProductsWithSpecification1(pageable, name);
         List<Product> products = pageProducts.getContent();
 
         model.addAttribute("products", products);

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
@@ -19,6 +20,7 @@ import vn.nguyendong.laptopshop.repository.CartRepository;
 import vn.nguyendong.laptopshop.repository.OrderDetailRepository;
 import vn.nguyendong.laptopshop.repository.OrderRepository;
 import vn.nguyendong.laptopshop.repository.ProductRepository;
+import vn.nguyendong.laptopshop.service.specification.ProductSpecification;
 
 @Service
 public class ProductService {
@@ -40,7 +42,85 @@ public class ProductService {
         this.orderDetailRepository = orderDetailRepository;
     }
 
-    public Page<Product> getAllProducts(Pageable pageable) {
+    // Filter Query with JPA Specifications -> JPA Criteria MetaModel
+    public Page<Product> fetchProductsWithSpecification1(Pageable pageable, String name) {
+        return this.productRepository.findAll(ProductSpecification.nameLike(name), pageable);
+    }
+
+    public Page<Product> fetchProductsWithSpecification2(Pageable pageable, double min) {
+        return this.productRepository.findAll(ProductSpecification.minPrice(min), pageable);
+    }
+
+    public Page<Product> fetchProductsWithSpecification3(Pageable pageable, double max) {
+        return this.productRepository.findAll(ProductSpecification.maxPrice(max), pageable);
+    }
+
+    public Page<Product> fetchProductsWithSpecification4(Pageable pageable, String factory) {
+        return this.productRepository.findAll(ProductSpecification.equalFactory(factory), pageable);
+    }
+
+    public Page<Product> fetchProductsWithSpecification5(Pageable pageable, List<String> factories) {
+        return this.productRepository.findAll(ProductSpecification.matchListFactory(factories), pageable);
+    }
+
+    public Page<Product> fetchProductsWithSpecification6(Pageable pageable, String price) {
+        if (price.equals("10-toi-15-trieu")) {
+            double min = 10000000;
+            double max = 15000000;
+            return this.productRepository.findAll(ProductSpecification.matchPrice(min, max), pageable);
+        } else if (price.equals("15-toi-20-trieu")) {
+            double min = 15000000;
+            double max = 20000000;
+            return this.productRepository.findAll(ProductSpecification.matchPrice(min, max), pageable);
+        } else if (price.equals("20-trieu-tro-len")) {
+            double min = 20000000;
+            double max = 100000000;
+            return this.productRepository.findAll(ProductSpecification.matchPrice(min, max), pageable);
+        }
+
+        return this.productRepository.findAll(pageable);
+    }
+
+    public Page<Product> fetchProductsWithSpecification7(Pageable pageable, List<String> prices) {
+        Specification<Product> combinedSpec = (root, query, criteriaBuilder) -> criteriaBuilder.disjunction();
+        int count = 0;
+        for (String p : prices) {
+            double min = 0;
+            double max = 0;
+
+            switch (p) {
+                case "10-toi-15-trieu":
+                    min = 10000000;
+                    max = 15000000;
+                    count++;
+                    break;
+                case "15-toi-20-trieu":
+                    min = 15000000;
+                    max = 20000000;
+                    count++;
+                    break;
+                case "20-trieu-tro-len":
+                    min = 20000000;
+                    max = 100000000;
+                    count++;
+                    break;
+            }
+
+            if (min != 0 && max != 0) {
+                Specification<Product> rangeSpec = ProductSpecification.matchMultiplePrice(min, max);
+                combinedSpec = combinedSpec.or(rangeSpec);
+            }
+        }
+
+        // Check if any price ranges were added (combinedSpec is empty)
+        if (count == 0) {
+            return this.productRepository.findAll(pageable);
+        }
+
+        return this.productRepository.findAll(combinedSpec, pageable);
+    }
+
+    public Page<Product> fetchProducts(Pageable pageable) {
         return this.productRepository.findAll(pageable);
     }
 

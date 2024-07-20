@@ -36,7 +36,7 @@ public class HomePageController {
     public String getHomePage(Model model) {
         int pageSize = 6;
         Pageable pageable = PageRequest.of(0, pageSize);
-        Page<Product> pageProducts = this.productService.getAllProducts(pageable);
+        Page<Product> pageProducts = this.productService.fetchProducts(pageable);
         List<Product> products = pageProducts.getContent();
 
         model.addAttribute("products", products);
