@@ -76,7 +76,8 @@ public class SecurityConfiguration {
                                                 .permitAll()
 
                                                 // Permit all requests to the following paths
-                                                .requestMatchers("/", "/login", "/register", "/product/**", "/products",
+                                                .requestMatchers("/", "/login", "/register", "/product/**",
+                                                                "/products/**",
                                                                 "/client/**", "/css/**", "/js/**",
                                                                 "/images/**")
                                                 .permitAll()

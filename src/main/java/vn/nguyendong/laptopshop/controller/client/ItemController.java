@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,9 @@ import jakarta.servlet.http.HttpSession;
 import vn.nguyendong.laptopshop.domain.Cart;
 import vn.nguyendong.laptopshop.domain.CartDetail;
 import vn.nguyendong.laptopshop.domain.Product;
+import vn.nguyendong.laptopshop.domain.Product_;
 import vn.nguyendong.laptopshop.domain.User;
+import vn.nguyendong.laptopshop.domain.dto.ProductCriteriaDTO;
 import vn.nguyendong.laptopshop.service.ProductService;
 
 @Controller
@@ -147,44 +150,49 @@ public class ItemController {
 
     @GetMapping("/products")
     public String getProductPage(Model model,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "name", defaultValue = "") String name,
-            @RequestParam(value = "minPrice", defaultValue = "") double min,
-            @RequestParam(value = "maxPrice", defaultValue = "") double max,
-            @RequestParam(value = "factory", defaultValue = "") String factory,
-            @RequestParam(value = "target", defaultValue = "") String target,
-            @RequestParam(value = "price", defaultValue = "") String price) {
-        int pageSize = 60;
+            ProductCriteriaDTO productCriteriaDTO,
+            HttpServletRequest request) {
+        int page = 1;
+        try {
+            if (productCriteriaDTO.getPage().isPresent()) {
+                // convert from String to int
+                page = Integer.parseInt(productCriteriaDTO.getPage().get());
+            } else {
+                // page = 1
+            }
+        } catch (Exception e) {
+            // page = 1
+            // TODO: handle exception
+        }
+
+        int pageSize = 6;
+        // check sort price
         Pageable pageable = PageRequest.of(page - 1, pageSize);
 
-        // case 1
-        Page<Product> pageProducts1 = this.productService.fetchProductsWithSpecification1(pageable, name);
+        if (productCriteriaDTO.getSort() != null && productCriteriaDTO.getSort().isPresent()) {
+            String sort = productCriteriaDTO.getSort().get();
+            if (sort.equals("gia-tang-dan")) {
+                pageable = PageRequest.of(page - 1, pageSize, Sort.by(Product_.PRICE).ascending());
+            } else if (sort.equals("gia-giam-dan")) {
+                pageable = PageRequest.of(page - 1, pageSize, Sort.by(Product_.PRICE).descending());
+            }
+        }
 
-        // case 2
-        Page<Product> pageProducts2 = this.productService.fetchProductsWithSpecification2(pageable, min);
+        Page<Product> prs = this.productService.fetchProductsWithSpecification(pageable, productCriteriaDTO);
 
-        // case 3
-        Page<Product> pageProducts3 = this.productService.fetchProductsWithSpecification3(pageable, max);
+        List<Product> products = prs.getContent().size() > 0 ? prs.getContent()
+                : new ArrayList<Product>();
 
-        // case 4
-        Page<Product> pageProducts4 = this.productService.fetchProductsWithSpecification4(pageable, factory);
-
-        // case 5
-        List<String> factories = Arrays.asList(factory.split(","));
-        Page<Product> pageProducts5 = this.productService.fetchProductsWithSpecification5(pageable, factories);
-
-        // case 7
-        List<String> prices = Arrays.asList(price.split(","));
-        Page<Product> pageProducts7 = this.productService.fetchProductsWithSpecification7(pageable, prices);
-
-        //
-        Page<Product> pageProducts = this.productService.fetchProductsWithSpecification1(pageable, name);
-        List<Product> products = pageProducts.getContent();
+        String qs = request.getQueryString();
+        if (qs != null && !qs.isBlank()) {
+            // remove page
+            qs = qs.replace("page=" + page, "");
+        }
 
         model.addAttribute("products", products);
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", pageProducts.getTotalPages());
-
+        model.addAttribute("totalPages", prs.getTotalPages());
+        model.addAttribute("queryString", qs);
         return "client/product/show";
     }
 

@@ -9,6 +9,10 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Trang chủ - Laptopshop</title>
 
+                <!-- <meta name="_csrf" content="${_csrf.token}" /> -->
+                <!-- default header name is X-CSRF-TOKEN -->
+                <!-- <meta name="_csrf_header" content="${_csrf.headerName}" /> -->
+
                 <!-- Google Web Fonts -->
                 <link rel="preconnect" href="https://fonts.googleapis.com">
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,6 +35,7 @@
 
                 <!-- Template Stylesheet -->
                 <link href="/client/css/style.css" rel="stylesheet">
+
 
             </head>
 
