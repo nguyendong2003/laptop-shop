@@ -2,6 +2,9 @@ package vn.nguyendong.laptopshop.controller.admin;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,9 +32,16 @@ public class ProductController {
     }
 
     @GetMapping("/admin/product")
-    public String getProductPage(Model model) {
-        List<Product> products = this.productService.getAllProducts();
+    public String getProductPage(Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
+        int pageSize = 6;
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<Product> pageProducts = this.productService.getAllProducts(pageable);
+        List<Product> products = pageProducts.getContent();
+
         model.addAttribute("products", products);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", pageProducts.getTotalPages());
+
         return "admin/product/show";
     }
 

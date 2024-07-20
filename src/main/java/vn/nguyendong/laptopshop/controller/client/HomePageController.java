@@ -2,6 +2,9 @@ package vn.nguyendong.laptopshop.controller.client;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,10 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import vn.nguyendong.laptopshop.domain.Product;
 import vn.nguyendong.laptopshop.domain.User;
@@ -35,7 +34,11 @@ public class HomePageController {
 
     @GetMapping("/")
     public String getHomePage(Model model) {
-        List<Product> products = productService.getAllProducts();
+        int pageSize = 6;
+        Pageable pageable = PageRequest.of(0, pageSize);
+        Page<Product> pageProducts = this.productService.getAllProducts(pageable);
+        List<Product> products = pageProducts.getContent();
+
         model.addAttribute("products", products);
         return "client/homepage/show";
     }

@@ -68,6 +68,32 @@
 
                                                 </tbody>
                                             </table>
+                                            <nav aria-label="Page navigation example">
+                                                <ul class="pagination justify-content-center">
+                                                    <li class="page-item">
+                                                        <a class="page-link ${currentPage == 1 ? 'disabled' : ''}"
+                                                            href="/admin/product?page=${currentPage - 1}"
+                                                            aria-label="Previous">
+                                                            <span aria-hidden="true">&laquo;</span>
+                                                        </a>
+                                                    </li>
+                                                    <c:forEach begin="1" end="${totalPages}" varStatus="loop">
+                                                        <li class="page-item">
+                                                            <a class="page-link ${loop.index == currentPage ? 'active' : ''}"
+                                                                href="/admin/product?page=${loop.index}">${loop.index}</a>
+                                                        </li>
+                                                    </c:forEach>
+                                                    <li
+                                                        class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+                                                        <a class="page-link"
+                                                            href="/admin/product?page=${currentPage + 1}"
+                                                            aria-label="Next">
+                                                            <span aria-hidden="true">&raquo;</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+
                                         </div>
 
                                     </div>
